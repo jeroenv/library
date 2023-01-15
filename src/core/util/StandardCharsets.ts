@@ -5,4 +5,5 @@ import CharacterSetECI from '../common/CharacterSetECI';
  */
 export default class StandardCharsets {
   public static ISO_8859_1 = CharacterSetECI.ISO8859_1;
+  public static UTF_8 = CharacterSetECI.UTF8;
 }
