@@ -19,7 +19,7 @@ import StandardCharsets from '../util/StandardCharsets';
 import StringEncoding from '../util/StringEncoding';
 import StringUtils from './StringUtils';
 
-class CharsetEncoder {
+export class CharsetEncoder {
   public name: string;
 
   constructor(public readonly charset: Charset) {

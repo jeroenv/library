@@ -56,6 +56,7 @@ export { default as GridSamplerInstance } from './core/common/GridSamplerInstanc
 export { default as HybridBinarizer } from './core/common/HybridBinarizer';
 export { default as PerspectiveTransform } from './core/common/PerspectiveTransform';
 export { default as StringUtils } from './core/common/StringUtils';
+export { CharsetEncoder, ECIEncoderSet } from './core/common/EciEncoderSet';
 
 // core/common/detector
 export { default as MathUtils } from './core/common/detector/MathUtils';
