@@ -29,123 +29,121 @@ import Result from '../Result';
 import ResultPoint from '../ResultPoint';
 import OneDReader from './OneDReader';
 
-
 /**
  * <p>Decodes Code 128 barcodes.</p>
  *
  * @author Sean Owen
  */
 export default class Code128Reader extends OneDReader {
-
-    private static CODE_PATTERNS: Int32Array[] = [
-        Int32Array.from([2, 1, 2, 2, 2, 2]),
-        Int32Array.from([2, 2, 2, 1, 2, 2]),
-        Int32Array.from([2, 2, 2, 2, 2, 1]),
-        Int32Array.from([1, 2, 1, 2, 2, 3]),
-        Int32Array.from([1, 2, 1, 3, 2, 2]),
-        Int32Array.from([1, 3, 1, 2, 2, 2]),
-        Int32Array.from([1, 2, 2, 2, 1, 3]),
-        Int32Array.from([1, 2, 2, 3, 1, 2]),
-        Int32Array.from([1, 3, 2, 2, 1, 2]),
-        Int32Array.from([2, 2, 1, 2, 1, 3]),
-        Int32Array.from([2, 2, 1, 3, 1, 2]),
-        Int32Array.from([2, 3, 1, 2, 1, 2]),
-        Int32Array.from([1, 1, 2, 2, 3, 2]),
-        Int32Array.from([1, 2, 2, 1, 3, 2]),
-        Int32Array.from([1, 2, 2, 2, 3, 1]),
-        Int32Array.from([1, 1, 3, 2, 2, 2]),
-        Int32Array.from([1, 2, 3, 1, 2, 2]),
-        Int32Array.from([1, 2, 3, 2, 2, 1]),
-        Int32Array.from([2, 2, 3, 2, 1, 1]),
-        Int32Array.from([2, 2, 1, 1, 3, 2]),
-        Int32Array.from([2, 2, 1, 2, 3, 1]),
-        Int32Array.from([2, 1, 3, 2, 1, 2]),
-        Int32Array.from([2, 2, 3, 1, 1, 2]),
-        Int32Array.from([3, 1, 2, 1, 3, 1]),
-        Int32Array.from([3, 1, 1, 2, 2, 2]),
-        Int32Array.from([3, 2, 1, 1, 2, 2]),
-        Int32Array.from([3, 2, 1, 2, 2, 1]),
-        Int32Array.from([3, 1, 2, 2, 1, 2]),
-        Int32Array.from([3, 2, 2, 1, 1, 2]),
-        Int32Array.from([3, 2, 2, 2, 1, 1]),
-        Int32Array.from([2, 1, 2, 1, 2, 3]),
-        Int32Array.from([2, 1, 2, 3, 2, 1]),
-        Int32Array.from([2, 3, 2, 1, 2, 1]),
-        Int32Array.from([1, 1, 1, 3, 2, 3]),
-        Int32Array.from([1, 3, 1, 1, 2, 3]),
-        Int32Array.from([1, 3, 1, 3, 2, 1]),
-        Int32Array.from([1, 1, 2, 3, 1, 3]),
-        Int32Array.from([1, 3, 2, 1, 1, 3]),
-        Int32Array.from([1, 3, 2, 3, 1, 1]),
-        Int32Array.from([2, 1, 1, 3, 1, 3]),
-        Int32Array.from([2, 3, 1, 1, 1, 3]),
-        Int32Array.from([2, 3, 1, 3, 1, 1]),
-        Int32Array.from([1, 1, 2, 1, 3, 3]),
-        Int32Array.from([1, 1, 2, 3, 3, 1]),
-        Int32Array.from([1, 3, 2, 1, 3, 1]),
-        Int32Array.from([1, 1, 3, 1, 2, 3]),
-        Int32Array.from([1, 1, 3, 3, 2, 1]),
-        Int32Array.from([1, 3, 3, 1, 2, 1]),
-        Int32Array.from([3, 1, 3, 1, 2, 1]),
-        Int32Array.from([2, 1, 1, 3, 3, 1]),
-        Int32Array.from([2, 3, 1, 1, 3, 1]),
-        Int32Array.from([2, 1, 3, 1, 1, 3]),
-        Int32Array.from([2, 1, 3, 3, 1, 1]),
-        Int32Array.from([2, 1, 3, 1, 3, 1]),
-        Int32Array.from([3, 1, 1, 1, 2, 3]),
-        Int32Array.from([3, 1, 1, 3, 2, 1]),
-        Int32Array.from([3, 3, 1, 1, 2, 1]),
-        Int32Array.from([3, 1, 2, 1, 1, 3]),
-        Int32Array.from([3, 1, 2, 3, 1, 1]),
-        Int32Array.from([3, 3, 2, 1, 1, 1]),
-        Int32Array.from([3, 1, 4, 1, 1, 1]),
-        Int32Array.from([2, 2, 1, 4, 1, 1]),
-        Int32Array.from([4, 3, 1, 1, 1, 1]),
-        Int32Array.from([1, 1, 1, 2, 2, 4]),
-        Int32Array.from([1, 1, 1, 4, 2, 2]),
-        Int32Array.from([1, 2, 1, 1, 2, 4]),
-        Int32Array.from([1, 2, 1, 4, 2, 1]),
-        Int32Array.from([1, 4, 1, 1, 2, 2]),
-        Int32Array.from([1, 4, 1, 2, 2, 1]),
-        Int32Array.from([1, 1, 2, 2, 1, 4]),
-        Int32Array.from([1, 1, 2, 4, 1, 2]),
-        Int32Array.from([1, 2, 2, 1, 1, 4]),
-        Int32Array.from([1, 2, 2, 4, 1, 1]),
-        Int32Array.from([1, 4, 2, 1, 1, 2]),
-        Int32Array.from([1, 4, 2, 2, 1, 1]),
-        Int32Array.from([2, 4, 1, 2, 1, 1]),
-        Int32Array.from([2, 2, 1, 1, 1, 4]),
-        Int32Array.from([4, 1, 3, 1, 1, 1]),
-        Int32Array.from([2, 4, 1, 1, 1, 2]),
-        Int32Array.from([1, 3, 4, 1, 1, 1]),
-        Int32Array.from([1, 1, 1, 2, 4, 2]),
-        Int32Array.from([1, 2, 1, 1, 4, 2]),
-        Int32Array.from([1, 2, 1, 2, 4, 1]),
-        Int32Array.from([1, 1, 4, 2, 1, 2]),
-        Int32Array.from([1, 2, 4, 1, 1, 2]),
-        Int32Array.from([1, 2, 4, 2, 1, 1]),
-        Int32Array.from([4, 1, 1, 2, 1, 2]),
-        Int32Array.from([4, 2, 1, 1, 1, 2]),
-        Int32Array.from([4, 2, 1, 2, 1, 1]),
-        Int32Array.from([2, 1, 2, 1, 4, 1]),
-        Int32Array.from([2, 1, 4, 1, 2, 1]),
-        Int32Array.from([4, 1, 2, 1, 2, 1]),
-        Int32Array.from([1, 1, 1, 1, 4, 3]),
-        Int32Array.from([1, 1, 1, 3, 4, 1]),
-        Int32Array.from([1, 3, 1, 1, 4, 1]),
-        Int32Array.from([1, 1, 4, 1, 1, 3]),
-        Int32Array.from([1, 1, 4, 3, 1, 1]),
-        Int32Array.from([4, 1, 1, 1, 1, 3]),
-        Int32Array.from([4, 1, 1, 3, 1, 1]),
-        Int32Array.from([1, 1, 3, 1, 4, 1]),
-        Int32Array.from([1, 1, 4, 1, 3, 1]),
-        Int32Array.from([3, 1, 1, 1, 4, 1]),
-        Int32Array.from([4, 1, 1, 1, 3, 1]),
-        Int32Array.from([2, 1, 1, 4, 1, 2]),
-        Int32Array.from([2, 1, 1, 2, 1, 4]),
-        Int32Array.from([2, 1, 1, 2, 3, 2]),
-        Int32Array.from([2, 3, 3, 1, 1, 1, 2]),
-      ];
+  public static CODE_PATTERNS: Int32Array[] = [
+    Int32Array.from([2, 1, 2, 2, 2, 2]),
+    Int32Array.from([2, 2, 2, 1, 2, 2]),
+    Int32Array.from([2, 2, 2, 2, 2, 1]),
+    Int32Array.from([1, 2, 1, 2, 2, 3]),
+    Int32Array.from([1, 2, 1, 3, 2, 2]),
+    Int32Array.from([1, 3, 1, 2, 2, 2]),
+    Int32Array.from([1, 2, 2, 2, 1, 3]),
+    Int32Array.from([1, 2, 2, 3, 1, 2]),
+    Int32Array.from([1, 3, 2, 2, 1, 2]),
+    Int32Array.from([2, 2, 1, 2, 1, 3]),
+    Int32Array.from([2, 2, 1, 3, 1, 2]),
+    Int32Array.from([2, 3, 1, 2, 1, 2]),
+    Int32Array.from([1, 1, 2, 2, 3, 2]),
+    Int32Array.from([1, 2, 2, 1, 3, 2]),
+    Int32Array.from([1, 2, 2, 2, 3, 1]),
+    Int32Array.from([1, 1, 3, 2, 2, 2]),
+    Int32Array.from([1, 2, 3, 1, 2, 2]),
+    Int32Array.from([1, 2, 3, 2, 2, 1]),
+    Int32Array.from([2, 2, 3, 2, 1, 1]),
+    Int32Array.from([2, 2, 1, 1, 3, 2]),
+    Int32Array.from([2, 2, 1, 2, 3, 1]),
+    Int32Array.from([2, 1, 3, 2, 1, 2]),
+    Int32Array.from([2, 2, 3, 1, 1, 2]),
+    Int32Array.from([3, 1, 2, 1, 3, 1]),
+    Int32Array.from([3, 1, 1, 2, 2, 2]),
+    Int32Array.from([3, 2, 1, 1, 2, 2]),
+    Int32Array.from([3, 2, 1, 2, 2, 1]),
+    Int32Array.from([3, 1, 2, 2, 1, 2]),
+    Int32Array.from([3, 2, 2, 1, 1, 2]),
+    Int32Array.from([3, 2, 2, 2, 1, 1]),
+    Int32Array.from([2, 1, 2, 1, 2, 3]),
+    Int32Array.from([2, 1, 2, 3, 2, 1]),
+    Int32Array.from([2, 3, 2, 1, 2, 1]),
+    Int32Array.from([1, 1, 1, 3, 2, 3]),
+    Int32Array.from([1, 3, 1, 1, 2, 3]),
+    Int32Array.from([1, 3, 1, 3, 2, 1]),
+    Int32Array.from([1, 1, 2, 3, 1, 3]),
+    Int32Array.from([1, 3, 2, 1, 1, 3]),
+    Int32Array.from([1, 3, 2, 3, 1, 1]),
+    Int32Array.from([2, 1, 1, 3, 1, 3]),
+    Int32Array.from([2, 3, 1, 1, 1, 3]),
+    Int32Array.from([2, 3, 1, 3, 1, 1]),
+    Int32Array.from([1, 1, 2, 1, 3, 3]),
+    Int32Array.from([1, 1, 2, 3, 3, 1]),
+    Int32Array.from([1, 3, 2, 1, 3, 1]),
+    Int32Array.from([1, 1, 3, 1, 2, 3]),
+    Int32Array.from([1, 1, 3, 3, 2, 1]),
+    Int32Array.from([1, 3, 3, 1, 2, 1]),
+    Int32Array.from([3, 1, 3, 1, 2, 1]),
+    Int32Array.from([2, 1, 1, 3, 3, 1]),
+    Int32Array.from([2, 3, 1, 1, 3, 1]),
+    Int32Array.from([2, 1, 3, 1, 1, 3]),
+    Int32Array.from([2, 1, 3, 3, 1, 1]),
+    Int32Array.from([2, 1, 3, 1, 3, 1]),
+    Int32Array.from([3, 1, 1, 1, 2, 3]),
+    Int32Array.from([3, 1, 1, 3, 2, 1]),
+    Int32Array.from([3, 3, 1, 1, 2, 1]),
+    Int32Array.from([3, 1, 2, 1, 1, 3]),
+    Int32Array.from([3, 1, 2, 3, 1, 1]),
+    Int32Array.from([3, 3, 2, 1, 1, 1]),
+    Int32Array.from([3, 1, 4, 1, 1, 1]),
+    Int32Array.from([2, 2, 1, 4, 1, 1]),
+    Int32Array.from([4, 3, 1, 1, 1, 1]),
+    Int32Array.from([1, 1, 1, 2, 2, 4]),
+    Int32Array.from([1, 1, 1, 4, 2, 2]),
+    Int32Array.from([1, 2, 1, 1, 2, 4]),
+    Int32Array.from([1, 2, 1, 4, 2, 1]),
+    Int32Array.from([1, 4, 1, 1, 2, 2]),
+    Int32Array.from([1, 4, 1, 2, 2, 1]),
+    Int32Array.from([1, 1, 2, 2, 1, 4]),
+    Int32Array.from([1, 1, 2, 4, 1, 2]),
+    Int32Array.from([1, 2, 2, 1, 1, 4]),
+    Int32Array.from([1, 2, 2, 4, 1, 1]),
+    Int32Array.from([1, 4, 2, 1, 1, 2]),
+    Int32Array.from([1, 4, 2, 2, 1, 1]),
+    Int32Array.from([2, 4, 1, 2, 1, 1]),
+    Int32Array.from([2, 2, 1, 1, 1, 4]),
+    Int32Array.from([4, 1, 3, 1, 1, 1]),
+    Int32Array.from([2, 4, 1, 1, 1, 2]),
+    Int32Array.from([1, 3, 4, 1, 1, 1]),
+    Int32Array.from([1, 1, 1, 2, 4, 2]),
+    Int32Array.from([1, 2, 1, 1, 4, 2]),
+    Int32Array.from([1, 2, 1, 2, 4, 1]),
+    Int32Array.from([1, 1, 4, 2, 1, 2]),
+    Int32Array.from([1, 2, 4, 1, 1, 2]),
+    Int32Array.from([1, 2, 4, 2, 1, 1]),
+    Int32Array.from([4, 1, 1, 2, 1, 2]),
+    Int32Array.from([4, 2, 1, 1, 1, 2]),
+    Int32Array.from([4, 2, 1, 2, 1, 1]),
+    Int32Array.from([2, 1, 2, 1, 4, 1]),
+    Int32Array.from([2, 1, 4, 1, 2, 1]),
+    Int32Array.from([4, 1, 2, 1, 2, 1]),
+    Int32Array.from([1, 1, 1, 1, 4, 3]),
+    Int32Array.from([1, 1, 1, 3, 4, 1]),
+    Int32Array.from([1, 3, 1, 1, 4, 1]),
+    Int32Array.from([1, 1, 4, 1, 1, 3]),
+    Int32Array.from([1, 1, 4, 3, 1, 1]),
+    Int32Array.from([4, 1, 1, 1, 1, 3]),
+    Int32Array.from([4, 1, 1, 3, 1, 1]),
+    Int32Array.from([1, 1, 3, 1, 4, 1]),
+    Int32Array.from([1, 1, 4, 1, 3, 1]),
+    Int32Array.from([3, 1, 1, 1, 4, 1]),
+    Int32Array.from([4, 1, 1, 1, 3, 1]),
+    Int32Array.from([2, 1, 1, 4, 1, 2]),
+    Int32Array.from([2, 1, 1, 2, 1, 4]),
+    Int32Array.from([2, 1, 1, 2, 3, 2]),
+    Int32Array.from([2, 3, 3, 1, 1, 1, 2]),
+  ];
 
   private static MAX_AVG_VARIANCE = 0.25;
   private static MAX_INDIVIDUAL_VARIANCE = 0.7;
@@ -171,30 +169,43 @@ export default class Code128Reader extends OneDReader {
     const width = row.getSize();
     const rowOffset = row.getNextSet(0);
 
-        let counterPosition = 0;
-        let counters = Int32Array.from([0, 0, 0, 0, 0, 0]);
-        let patternStart = rowOffset;
-        let isWhite = false;
-        const patternLength = 6;
+    let counterPosition = 0;
+    let counters = Int32Array.from([0, 0, 0, 0, 0, 0]);
+    let patternStart = rowOffset;
+    let isWhite = false;
+    const patternLength = 6;
 
     for (let i = rowOffset; i < width; i++) {
       if (row.get(i) !== isWhite) {
         counters[counterPosition]++;
       } else {
-        if (counterPosition === (patternLength - 1)) {
+        if (counterPosition === patternLength - 1) {
           let bestVariance = Code128Reader.MAX_AVG_VARIANCE;
           let bestMatch = -1;
-          for (let startCode = Code128Reader.CODE_START_A; startCode <= Code128Reader.CODE_START_C; startCode++) {
-            const variance = OneDReader.patternMatchVariance(counters,
-              Code128Reader.CODE_PATTERNS[startCode], Code128Reader.MAX_INDIVIDUAL_VARIANCE);
+          for (
+            let startCode = Code128Reader.CODE_START_A;
+            startCode <= Code128Reader.CODE_START_C;
+            startCode++
+          ) {
+            const variance = OneDReader.patternMatchVariance(
+              counters,
+              Code128Reader.CODE_PATTERNS[startCode],
+              Code128Reader.MAX_INDIVIDUAL_VARIANCE
+            );
             if (variance < bestVariance) {
               bestVariance = variance;
               bestMatch = startCode;
             }
           }
           // Look for whitespace before start pattern, >= 50% of width of start pattern
-          if (bestMatch >= 0 &&
-            row.isRange(Math.max(0, patternStart - (i - patternStart) / 2), patternStart, false)) {
+          if (
+            bestMatch >= 0 &&
+            row.isRange(
+              Math.max(0, patternStart - (i - patternStart) / 2),
+              patternStart,
+              false
+            )
+          ) {
             return Int32Array.from([patternStart, i, bestMatch]);
           }
           patternStart += counters[0] + counters[1];
@@ -213,13 +224,21 @@ export default class Code128Reader extends OneDReader {
     throw new NotFoundException();
   }
 
-  private static decodeCode(row: BitArray, counters: Int32Array, rowOffset: number): number {
+  private static decodeCode(
+    row: BitArray,
+    counters: Int32Array,
+    rowOffset: number
+  ): number {
     OneDReader.recordPattern(row, rowOffset, counters);
     let bestVariance = Code128Reader.MAX_AVG_VARIANCE; // worst variance we'll accept
     let bestMatch = -1;
     for (let d = 0; d < Code128Reader.CODE_PATTERNS.length; d++) {
       const pattern = Code128Reader.CODE_PATTERNS[d];
-      const variance = this.patternMatchVariance(counters, pattern, Code128Reader.MAX_INDIVIDUAL_VARIANCE);
+      const variance = this.patternMatchVariance(
+        counters,
+        pattern,
+        Code128Reader.MAX_INDIVIDUAL_VARIANCE
+      );
       if (variance < bestVariance) {
         bestVariance = variance;
         bestMatch = d;
@@ -233,8 +252,12 @@ export default class Code128Reader extends OneDReader {
     }
   }
 
-  public decodeRow(rowNumber: number, row: BitArray, hints?: Map<DecodeHintType, any>): Result {
-    const convertFNC1 = hints && (hints.get(DecodeHintType.ASSUME_GS1) === true);
+  public decodeRow(
+    rowNumber: number,
+    row: BitArray,
+    hints?: Map<DecodeHintType, any>
+  ): Result {
+    const convertFNC1 = hints && hints.get(DecodeHintType.ASSUME_GS1) === true;
 
     const startPatternInfo = Code128Reader.findStartPattern(row);
     const startCode = startPatternInfo[2];
@@ -276,7 +299,6 @@ export default class Code128Reader extends OneDReader {
     let shiftUpperMode = false;
 
     while (!done) {
-
       const unshift = isNextShifted;
       isNextShifted = false;
 
@@ -301,7 +323,10 @@ export default class Code128Reader extends OneDReader {
 
       // Advance to where the next code will to start
       lastStart = nextStart;
-      nextStart += counters.reduce((previous, current) => previous + current, 0);
+      nextStart += counters.reduce(
+        (previous, current) => previous + current,
+        0
+      );
 
       // Take care of illegal start codes
       switch (code) {
@@ -312,20 +337,19 @@ export default class Code128Reader extends OneDReader {
       }
 
       switch (codeSet) {
-
         case Code128Reader.CODE_CODE_A:
           if (code < 64) {
             if (shiftUpperMode === upperMode) {
-              result += String.fromCharCode((' '.charCodeAt(0) + code));
+              result += String.fromCharCode(' '.charCodeAt(0) + code);
             } else {
-              result += String.fromCharCode((' '.charCodeAt(0) + code + 128));
+              result += String.fromCharCode(' '.charCodeAt(0) + code + 128);
             }
             shiftUpperMode = false;
           } else if (code < 96) {
             if (shiftUpperMode === upperMode) {
-              result += String.fromCharCode((code - 64));
+              result += String.fromCharCode(code - 64);
             } else {
-              result += String.fromCharCode((code + 64));
+              result += String.fromCharCode(code + 64);
             }
             shiftUpperMode = false;
           } else {
@@ -381,9 +405,9 @@ export default class Code128Reader extends OneDReader {
         case Code128Reader.CODE_CODE_B:
           if (code < 96) {
             if (shiftUpperMode === upperMode) {
-              result += String.fromCharCode((' '.charCodeAt(0) + code));
+              result += String.fromCharCode(' '.charCodeAt(0) + code);
             } else {
-              result += String.fromCharCode((' '.charCodeAt(0) + code + 128));
+              result += String.fromCharCode(' '.charCodeAt(0) + code + 128);
             }
             shiftUpperMode = false;
           } else {
@@ -473,9 +497,11 @@ export default class Code128Reader extends OneDReader {
 
       // Unshift back to another code set if we were shifted
       if (unshift) {
-        codeSet = codeSet === Code128Reader.CODE_CODE_A ? Code128Reader.CODE_CODE_B : Code128Reader.CODE_CODE_A;
+        codeSet =
+          codeSet === Code128Reader.CODE_CODE_A
+            ? Code128Reader.CODE_CODE_B
+            : Code128Reader.CODE_CODE_A;
       }
-
     }
 
     const lastPatternSize = nextStart - lastStart;
@@ -484,9 +510,13 @@ export default class Code128Reader extends OneDReader {
     // we fudged decoding CODE_STOP since it actually has 7 bars, not 6. There is a black bar left
     // to read off. Would be slightly better to properly read. Here we just skip it:
     nextStart = row.getNextUnset(nextStart);
-    if (!row.isRange(nextStart,
-      Math.min(row.getSize(), nextStart + (nextStart - lastStart) / 2),
-      false)) {
+    if (
+      !row.isRange(
+        nextStart,
+        Math.min(row.getSize(), nextStart + (nextStart - lastStart) / 2),
+        false
+      )
+    ) {
       throw new NotFoundException();
     }
 
@@ -524,8 +554,18 @@ export default class Code128Reader extends OneDReader {
       rawBytes[i] = rawCodes[i];
     }
 
-    const points: ResultPoint[] = [new ResultPoint(left, rowNumber), new ResultPoint(right, rowNumber)];
+    const points: ResultPoint[] = [
+      new ResultPoint(left, rowNumber),
+      new ResultPoint(right, rowNumber),
+    ];
 
-    return new Result(result, rawBytes, 0, points, BarcodeFormat.CODE_128, new Date().getTime());
+    return new Result(
+      result,
+      rawBytes,
+      0,
+      points,
+      BarcodeFormat.CODE_128,
+      new Date().getTime()
+    );
   }
 }

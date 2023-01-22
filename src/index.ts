@@ -84,6 +84,7 @@ export { default as PDF417Reader } from './core/pdf417/PDF417Reader';
 export { default as PDF417ResultMetadata } from './core/pdf417/PDF417ResultMetadata';
 export { default as PDF417DecodedBitStreamParser } from './core/pdf417/decoder/DecodedBitStreamParser';
 export { default as PDF417DecoderErrorCorrection } from './core/pdf417/decoder/ec/ErrorCorrection';
+export { default as PDF417Writer } from './core/pdf417/PDF417Writer';
 
 // core/twod/qrcode
 export { default as QRCodeReader } from './core/qrcode/QRCodeReader';
@@ -115,6 +116,7 @@ export { Point as AztecPoint } from './core/aztec/detector/Detector';
 export { default as OneDReader } from './core/oned/OneDReader';
 export { default as EAN13Reader } from './core/oned/EAN13Reader';
 export { default as Code128Reader } from './core/oned/Code128Reader';
+export { default as Code128Writer } from './core/oned/Code128Writer';
 export { default as ITFReader } from './core/oned/ITFReader';
 export { default as Code39Reader } from './core/oned/Code39Reader';
 export { default as RSS14Reader } from './core/oned/rss/RSS14Reader';
