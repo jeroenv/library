@@ -37,7 +37,7 @@ export class CharsetEncoder {
 
 export class ECIEncoderSet {
   private readonly ENCODERS: CharsetEncoder[] = [
-    'IBM437',
+    //'IBM437',
     'ISO-8859-2',
     'ISO-8859-3',
     'ISO-8859-4',

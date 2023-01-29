@@ -56,7 +56,7 @@ export { default as GridSamplerInstance } from './core/common/GridSamplerInstanc
 export { default as HybridBinarizer } from './core/common/HybridBinarizer';
 export { default as PerspectiveTransform } from './core/common/PerspectiveTransform';
 export { default as StringUtils } from './core/common/StringUtils';
-export { CharsetEncoder, ECIEncoderSet } from './core/common/EciEncoderSet';
+export { CharsetEncoder, ECIEncoderSet } from './core/common/ECIEncoderSet';
 
 // core/common/detector
 export { default as MathUtils } from './core/common/detector/MathUtils';
@@ -85,6 +85,9 @@ export { default as PDF417ResultMetadata } from './core/pdf417/PDF417ResultMetad
 export { default as PDF417DecodedBitStreamParser } from './core/pdf417/decoder/DecodedBitStreamParser';
 export { default as PDF417DecoderErrorCorrection } from './core/pdf417/decoder/ec/ErrorCorrection';
 export { default as PDF417Writer } from './core/pdf417/PDF417Writer';
+
+// core/maxicode
+export { default as MaxiCodeWriter } from './core/maxicode/MaxiCodeWriter';
 
 // core/twod/qrcode
 export { default as QRCodeReader } from './core/qrcode/QRCodeReader';

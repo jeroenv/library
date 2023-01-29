@@ -4,7 +4,6 @@ import ArrayIndexOutOfBoundsException from '../ArrayIndexOutOfBoundsException';
 import { int } from '../../customTypings';
 
 export default class Arrays {
-
   /**
    * Assigns the specified int value to each element of the specified array
    * of ints.
@@ -13,8 +12,7 @@ export default class Arrays {
    * @param val the value to be stored in all elements of the array
    */
   public static fill(a: Int32Array | Uint8Array | any[], val: int): void {
-    for (let i = 0, len = a.length; i < len; i++)
-      a[i] = val;
+    for (let i = 0, len = a.length; i < len; i++) a[i] = val;
   }
 
   /**
@@ -34,10 +32,14 @@ export default class Arrays {
    * @throws ArrayIndexOutOfBoundsException if {@code fromIndex < 0} or
    *         {@code toIndex > a.length}
    */
-  public static fillWithin(a: Int32Array, fromIndex: int, toIndex: int, val: int): void {
+  public static fillWithin(
+    a: Int32Array,
+    fromIndex: int,
+    toIndex: int,
+    val: int
+  ): void {
     Arrays.rangeCheck(a.length, fromIndex, toIndex);
-    for (let i = fromIndex; i < toIndex; i++)
-      a[i] = val;
+    for (let i = fromIndex; i < toIndex; i++) a[i] = val;
   }
 
   /**
@@ -47,7 +49,8 @@ export default class Arrays {
   static rangeCheck(arrayLength: int, fromIndex: int, toIndex: int): void {
     if (fromIndex > toIndex) {
       throw new IllegalArgumentException(
-        'fromIndex(' + fromIndex + ') > toIndex(' + toIndex + ')');
+        'fromIndex(' + fromIndex + ') > toIndex(' + toIndex + ')'
+      );
     }
     if (fromIndex < 0) {
       throw new ArrayIndexOutOfBoundsException(fromIndex);
@@ -62,14 +65,16 @@ export default class Arrays {
   }
 
   public static create<T = any>(rows: int, cols: int, value?: T): T[][] {
-
     let arr = Array.from({ length: rows });
 
     return arr.map(x => Array.from<T>({ length: cols }).fill(value));
   }
 
-  public static createInt32Array(rows: int, cols: int, value?: int): Int32Array[] {
-
+  public static createInt32Array(
+    rows: int,
+    cols: int,
+    value?: int
+  ): Int32Array[] {
     let arr = Array.from({ length: rows });
 
     return arr.map(x => Int32Array.from({ length: cols }).fill(value));
@@ -120,8 +125,10 @@ export default class Arrays {
     return original.slice(0, newLength);
   }
 
-  public static copyOfUint8Array(original: Uint8Array, newLength: number): Uint8Array {
-
+  public static copyOfUint8Array(
+    original: Uint8Array,
+    newLength: number
+  ): Uint8Array {
     if (original.length <= newLength) {
       const newArray = new Uint8Array(newLength);
       newArray.set(original);
@@ -131,7 +138,11 @@ export default class Arrays {
     return original.slice(0, newLength);
   }
 
-  public static copyOfRange(original: Int32Array, from: number, to: number): Int32Array {
+  public static copyOfRange(
+    original: Int32Array,
+    from: number,
+    to: number
+  ): Int32Array {
     const newLength = to - from;
     const copy = new Int32Array(newLength);
     System.arraycopy(original, from, copy, 0, newLength);
@@ -139,21 +150,25 @@ export default class Arrays {
   }
 
   /*
-  * Returns the index of of the element in a sorted array or (-n-1) where n is the insertion point
-  * for the new element.
-  * Parameters:
-  *     ar - A sorted array
-  *     el - An element to search for
-  *     comparator - A comparator function. The function takes two arguments: (a, b) and returns:
-  *        a negative number  if a is less than b;
-  *        0 if a is equal to b;
-  *        a positive number of a is greater than b.
-  * The array may contain duplicate elements. If there are more than one equal elements in the array,
-  * the returned value can be the index of any one of the equal elements.
-  *
-  * http://jsfiddle.net/aryzhov/pkfst550/
-  */
-  public static binarySearch(ar: Int32Array, el: number, comparator?: (a: number, b: number) => number): number {
+   * Returns the index of of the element in a sorted array or (-n-1) where n is the insertion point
+   * for the new element.
+   * Parameters:
+   *     ar - A sorted array
+   *     el - An element to search for
+   *     comparator - A comparator function. The function takes two arguments: (a, b) and returns:
+   *        a negative number  if a is less than b;
+   *        0 if a is equal to b;
+   *        a positive number of a is greater than b.
+   * The array may contain duplicate elements. If there are more than one equal elements in the array,
+   * the returned value can be the index of any one of the equal elements.
+   *
+   * http://jsfiddle.net/aryzhov/pkfst550/
+   */
+  public static binarySearch(
+    ar: Int32Array,
+    el: number,
+    comparator?: (a: number, b: number) => number
+  ): number {
     if (undefined === comparator) {
       comparator = Arrays.numberComparator;
     }
@@ -175,5 +190,42 @@ export default class Arrays {
 
   public static numberComparator(a: number, b: number) {
     return a - b;
+  }
+
+  /**
+   * Inserts the specified array into the specified original array at the specified index.
+   *
+   * @param original the original array into which we want to insert another array
+   * @param index the index at which we want to insert the array
+   * @param inserted the array that we want to insert
+   * @return the combined array
+   */
+  public static /*int[]*/ insertArray(
+    /*int[]*/ original: number[],
+    /*int*/ index: number,
+    /*int[]*/ inserted: number[]
+  ): number[] {
+    return [...original.slice(0, index), ...inserted, ...original.slice(index)];
+  }
+
+  /**
+   * Returns <code>true</code> if the specified array contains the specified sub-array at the specified index.
+   *
+   * @param array the array to search in
+   * @param searchFor the sub-array to search for
+   * @param index the index at which to search
+   * @return whether or not the specified array contains the specified sub-array at the specified index
+   */
+  public static /*boolean*/ containsAt(
+    array: Uint8Array,
+    searchFor: Uint8Array,
+    index: number
+  ) {
+    for (let i = 0; i < searchFor.length; i++) {
+      if (index + i >= array.length || array[index + i] != searchFor[i]) {
+        return false;
+      }
+    }
+    return true;
   }
 }
